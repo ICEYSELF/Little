@@ -106,7 +106,11 @@ valueB = |ParttenB|             // Matches |ParttenB|
 valueC = |Partten| 1;           // Matches |Partten| 1 or |Partten| x or |Partten| _ or _
 valueD = |Partten| (1, 2);      // Matches |Partten| (1, 2) or |Partten| (x, y) or |Partten| x or |Partten| _ or _
 
-|SomePartten| (x, y) = (1, 2);  // Make (1, 2) Matches |SomePartten| (1, 2)
+// Active Partten
+|SomePartten| (x, y) = function {
+    x, y -> |SomePartten| (x, y);  // Make (x, y) Matches |SomePartten| (1, 2)
+    _ -> ()                        // Not Matches
+};
 
 // Monad
 option = {
