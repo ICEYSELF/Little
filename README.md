@@ -155,6 +155,10 @@ if a > 1 {
     something;
 };
 
+if match <partten> = <expression> {
+    something;
+}
+
 // loop expression
 loop {
     something;
@@ -167,8 +171,12 @@ while true {
     continue;
 };
 
+while match <partten> {
+    something;
+}
+
 // for expresion
-for i in something {
+for <partten> in something {
     something;
     break;
     continue;
