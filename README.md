@@ -14,7 +14,7 @@ import Prelude;     // Search current directory firstly, search custom directory
 import MyModule;
 
 // Bindings
-// multiExpression = <expression>; | { (<expression>;)+ [expression] }
+// multiExpression = <expression>; | '{' (<expression>;)+ [expression] '}'
 // binding ::= [export] <partten> = multiExpression
 // bindings is avaliable on current context only.
 // if current context is already has this name, compiling will fail.
@@ -41,17 +41,24 @@ num15 = 100big; // big (Big Integer)
 export num16 = 100.0fbig; // fbig (Big Float) and you can get this value by outside.
 
 // Functions
-// function ::= (<parameterName> <space>)+ -> multiExpression
-// apply ::= <functionExpression> <parameterExpression>
-f1 = a b -> a + b;
+// function ::= <partten>+ -> multiExpression
+// apply ::= <functionExpression>'('<parameterExpression>')'
+f1 = (a, b) -> a + b;
 f2 = a -> a + 1;
-f3 = a b -> {
+f3 = (a, b) -> {
     sum = a + b;
     sum
-}
-apply = f1 1 2;
-partialApply = f1 1;
-apply2 = partialApply 2;
+};
+apply = f1(1, 2);
+
+// Partten Matching
+matchingFunction = function {
+    (a, b) -> a + b;
+    a -> a + 1;
+    |EmptyList| -> empty;
+    |List| (head, |EmptyList|) -> list with 1 element;
+    |List| (head, tail)-> list with elements;
+};
 
 // Mutable Values
 // mutable is a function, it will create a reference cell to wrap the value.
@@ -72,16 +79,13 @@ super string!!!
 
 ls = list { 1; 2; 3; 4; 5; 6 };    // List Monad
 lsLazy = seq { 1; 2; 3; 4; 5; 6 }; // Sequence Monad (Lazy List)
-lsFirst = ls.get 0;
-lsSecond = ls.get 1;
-lsSlice = ls.slice 0 3;  // list { 1; 2; 3; 4 }
+lsFirst = ls.get(0);
+lsSecond = ls.get(1);
+lsSlice = ls.slice(0, 3);  // list { 1; 2; 3; 4 }
 
 // Tuple
 tuple = (1, 2);
 (first, second) = tuple;
-
-
-// Pipeline
 
 // Print
 // printf : formatString -> formatAndPrintFunction
@@ -96,15 +100,23 @@ a = {
 
 b = a with { b = "this is a b!"; c = "c"; export addWithA = fn x -> x + a; };
 
+// Tagged Union
+valueA = |ParttenA|             // Matches |ParttenA|
+valueB = |ParttenB|             // Matches |ParttenB|
+valueC = |Partten| 1;           // Matches |Partten| 1 or |Partten| x or |Partten| _ or _
+valueD = |Partten| (1, 2);      // Matches |Partten| (1, 2) or |Partten| (x, y) or |Partten| x or |Partten| _ or _
+
+|SomePartten| (x, y) = (1, 2);  // Make (1, 2) Matches |SomePartten| (1, 2)
+
 // Monad
 option = {
     return = a -> |Some| a;
     unit = |None|;
-    bind = f a ->
-      match a {
+    bind = (f, a) ->
+      function {
           |Some| x -> |Some| (f x);
           |None| -> |None|;
-      };
+      }(a);
     // combine
     // combineUnwrap
     // for
@@ -124,6 +136,7 @@ resultMonad = try {
 
 // if expression
 ifResult = if a > 1 { 1 } else { 2 };
+
 if a > 1 {
     something;
 };
@@ -146,9 +159,4 @@ for i in something {
     break;
     continue;
 };
-
-// do-while expression
-do {
-   something;
-} while something;
 ```
