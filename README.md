@@ -20,7 +20,7 @@ import MyModule;
 // if current context is already has this name, compiling will fail.
 
 // Basic Types
-null = ();   // null
+unit = ();   // unit
 b1 = true;   // bool
 b2 = false;  // bool
 num1 = 1;    // i32 (int32)
@@ -110,6 +110,16 @@ valueD = |Partten| (1, 2);      // Matches |Partten| (1, 2) or |Partten| (x, y) 
 |SomePartten| (x, y) = function {
     x, y -> |SomePartten| (x, y);  // Make (x, y) Matches |SomePartten| (1, 2)
     _ -> ()                        // Not Matches
+};
+
+// Trait Partten
+|Disposeable| = trait {             // Matches as `|Disposeable| object`.
+    dispose : _ -> unit;
+};
+
+|Monad| = trait {
+    bind : (_, _) -> unit;
+    return : _ -> _;
 };
 
 // Monad
