@@ -1,3 +1,7 @@
+> ## **⚠️⚠️⚠️WARNING⚠️⚠️⚠️**: OUT OF MAINTAINCE
+> Originally designed by Seng-Jik, The language "Little" was quickly dropped by its original author since it is not "industrail". 
+> For backup I reserved this forked repository, But I won't maintain either the design or the implementation for this language.
+
 # Little
 Little is a dynamic strong typed script Programming Language
 
